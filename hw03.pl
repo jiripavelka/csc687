@@ -25,65 +25,43 @@ foreach(@a) {
 }
 print "\n";
 
-my $s = 'A private research university with more than 17,000 students from around the world, the University of Miami is a vibrant and diverse academic community focused on teaching and learning, the discovery of new knowledge, and service to the South Florida region and beyond. The University comprises 11 schools and colleges serving undergraduate and graduate students in more than 180 majors and programs. UM ranks No. 46 on U.S. News & World Report’s 2018 Best Colleges list and ranked No. 44 in the 2018 Wall Street Journal/Times Higher Education College Rankings. Established in 1925 during the region\'s famous real estate boom, UM is a major research university engaged in $324 million in research and sponsored program expenditures annually. While the majority of this work is housed at the Miller School of Medicine, investigators conduct hundreds of studies in other areas, including marine science, engineering, education, and psychology.';
-
-my @w = split / /, $s;
-my %m;
-foreach(@w) {
+my $string = 'A private research university with more than 17,000 students from around the world, the University of Miami is a vibrant and diverse academic community focused on teaching and learning, the discovery of new knowledge, and service to the South Florida region and beyond. The University comprises 11 schools and colleges serving undergraduate and graduate students in more than 180 majors and programs. UM ranks No. 46 on U.S. News & World Report’s 2018 Best Colleges list and ranked No. 44 in the 2018 Wall Street Journal/Times Higher Education College Rankings. Established in 1925 during the region\'s famous real estate boom, UM is a major research university engaged in $324 million in research and sponsored program expenditures annually. While the majority of this work is housed at the Miller School of Medicine, investigators conduct hundreds of studies in other areas, including marine science, engineering, education, and psychology.';
+my @words = split / /, $string;
+my %wordMap;
+foreach(@words) {
+    if ($wordMap{$_}) {
+        $wordMap{$_}++;
+    } else {
+        $wordMap{$_} = 1;
+    }
+    #print "`$_`\n";
+}
+my @sortedWords;
+foreach (sort { $wordMap{$b} <=> $wordMap{$a} } keys %wordMap) {
+    #print "$_ => " . $wordMap{$_} . "\n";
+    push @sortedWords, "$_ " . $wordMap{$_};
+}
+foreach(@sortedWords) {
     print "`$_`\n";
 }
 print "\n";
 
-
-
-
-=pod
-
-my @a;
-for ($i = 1; $i <= 11; $i = $i + 2) {
-    push @a, $i;
+my $seq1 = "CATTAATGAAAATTCTCAGCAAAAGTCATATATATTCTCGCCAAGGCGACACACCAGCTA";
+my $pat = "GC";
+my $wc = () = $seq1 =~ /$pat/gi;
+if ($wc == 0) {
+    print "The pattern `$pat` does NOT occur in the text.\n";
+} else {
+    print "The pattern `$pat` occurs in the text $wc times.\n";
 }
-my @b;
-for ($i = 10; $i >= 0; $i = $i - 2) {
-    push @b, $i;
-}
-my @c;
-$max = 0;
-$sum = 0;
-for($i = 0; $i <= $#a; $i++) {
-    $p = $a[$i] * $b[$i];
-    if ($p > $max) {
-        $max = $p;
-    }
-    $sum += $p;
-    push @c, $p;
-}
-print "Largest = $max, Sum = $sum\n";
+print "\n";
 
-my @d;
-for ($i = 1; $i <= 100; $i++) {
-    push @d, $i;
-}
-$sum = 0;
-foreach(@d) {
-    $sum += $_;
-}
-print "Sum 1..100 is $sum\n";
-
-$s = "Zheng Wang 28; Mary Young 34; Bob Clinton 38; Cali Liu 31; Winston Churchill 2; ";
-@n = split /; /, $s;
-$max = 0;
-foreach(@n) {
-    @p = split / /, $_;
-    if ($p[2] > $max) {
-        $max = $p[2];
+$seq1 = "CCCCEEEEEEECCCCCCCHHHHHHHHHHHCCCCCEEEEECCEEEEEECCHHHHHHHHHHHHHHCCCCEEEEEEC";
+my $seq2 = "HHHCCCEEECCCCCCCCHHHHHHHHHHCCCCCCCCCCCCCCCEEECCCCHHHHHHCCCEEEEECCCCEEEEECC";
+my $count = 0;
+for(my $i = 0; $i < (- 1 + length $seq1); $i++) {
+    if (substr($seq1, $i, 2) eq substr ($seq2, $i, 2)) {
+        $count++;
     }
 }
-print "Oldest person is $max years old.\n";
-
-$s = "A private research university with more than 17,000 students from around the world, the University of Miami is a vibrant and diverse academic community focused on teaching and learning, the discovery of new knowledge, and service to the South Florida region and beyond. The University comprises 11 schools and colleges serving undergraduate and graduate students in more than 180 majors and programs. UM ranks No. 46 on U.S. News & World Report’s 2018 Best Colleges list and ranked No. 44 in the 2018 Wall Street Journal/Times Higher Education College Rankings. Established in 1925 during the region's famous real estate boom, UM is a major research university engaged in \$324 million in research and sponsored program expenditures annually. While the majority of this work is housed at the Miller School of Medicine, investigators conduct hundreds of studies in other areas, including marine science, engineering, education, and psychology. ";
-
-my $w = "university";
-my $wc = () = $s =~ /$w/gi;
-my $twc = () = $s =~ / /gi;
-print "The word '$w' occurs $wc times in $twc words.\n";
+print "There are $count character pairs in the two DNA sequences.\n"
