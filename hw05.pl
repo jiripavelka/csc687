@@ -56,20 +56,25 @@ while (<IN>) {
 close (IN);
 printf ("4.1 Residues which don't have CB atom: %s.\n\n", join (", ", @a));
 
-my @d;
-foreach (sort { $coord{$a} <=> $coord{$b} } keys %coord) {
-    my $i = $_;
-    my @r;
-    foreach (sort { $coord{$a} <=> $coord{$b} } keys %coord) {
-        my $j = $_;
-        push(@r, "d1");
-        push(@r, "d2");
-        push(@r, "d3");
-    }
-    print join (" ", @r)."\n";
-    last;
-    push (@d, @r);
+sub edist {
+    my ($x1, $y1, $z1, $x2, $y2, $z2) = @_;
+    return sqrt(($x1 - $x2)**2 + ($y1 - $y2)**2 + ($z1 - $z2)**2);
 }
-foreach my $row (@d) {
-    print join (" ", $row)."\n";
+
+my @d;
+foreach my $ki (sort keys %coord) {
+    my @r;
+    foreach my $kj (sort keys %coord) {
+        push (@r, edist(@{$coord{$ki}}, @{$coord{$kj}}));
+    }
+    push (@d, \@r);
+}
+my $limit = scalar @d;
+my $limit = 10;
+printf ("4.2 Distance array constructed. Print with limit of %d x %d.\n", $limit, $limit);
+for(my $i = 0; $i < $limit; $i++) {
+    for(my $j = 0; $j < $limit; $j++) {
+        printf ("%8.4f ", $d[$i][$j]);
+    }
+    print "\n";
 }
