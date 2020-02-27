@@ -14,7 +14,7 @@ my $base_name = substr($user_file, 0, -4);
 my @a;
 die "File not found.\n" if !open (IN, $user_file);
 die "Cannot open file.\n" if !open(OUT, '>', "$base_name.fas");
-print OUT ">$base_name";
+print OUT ">$base_name\n";
 while (<IN>) {
   next if substr($_, 0, 4) ne "ATOM";
   next if substr($_, 21, 1) ne "A";
