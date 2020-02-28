@@ -2,21 +2,24 @@
 use strict;
 use warnings;
 
-my $user_file = "1AD5.fas";
-my $user_left = 7;
-my $user_center = 1;
-my $user_right = 7;
-my $user_blank = "_";
+# user variables
+my $left = 7;
+my $center = 1;
+my $right = 7;
+my $blank = "*";
+my $sep = "  ";
 
-die "File not found.\n" if !open (IN, $user_file);
+# read standard input
 my $seq = "";
-while (<IN>) {
+while (<>) {
   $seq = $_;
 }
-close (IN);
+chomp $seq;
 
+# print windows
 my $len = length $seq;
-$seq = $user_blank x $user_left . $seq . $user_blank x $user_right;
+$seq = $blank x $left . $seq . $blank x $right;
 for (my $i = 0; $i < $len; $i++) {
-  print substr($seq, $i, $user_left + $user_center + $user_right)."\n";
+  print substr($seq, $i, $left).$sep.substr($seq, $i + $left, $center)
+    .$sep.substr($seq, $i + $left + $center, $right)."\n";
 }
