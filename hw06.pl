@@ -22,3 +22,14 @@ for (my $i = 0; $i < @arr1; $i++) {
 }
 my $rs = 1 - 6 * $di_ssum / (@arr1 * (@arr1**2 - 1));
 printf ("1. Spearman's rank correlation coefficient is %.3f.\n\n", $rs);
+
+my %h;
+open (IN, "CS_courses.txt");
+while (<IN>) {
+    next if (index($_, ">CSC") < 0);
+    my $course = s/>CSC1/x/;
+    print $course."\n";
+    #print $l."\n";
+
+}
+close (IN);
