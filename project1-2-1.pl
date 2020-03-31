@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-#use strict;
-#use warnings;
+use strict;
+use warnings;
 
 my @a;
 for (my $i = 0; $i < 155; $i ++) {
@@ -11,9 +11,12 @@ for (my $i = 0; $i < 155; $i ++) {
 
 open (IN, "contact_library.txt");
 while (<IN>) {
-    $_ =~ /(\d+)\d{6}\s+(\d+)\d{6}/;
-    $a[$1][$2]++;
-    $a[$2][$1]++;
+    die if $_ !~ /^(\d*?)\d{0,6}\s+(\d*?)\d{0,6}$/;
+    my $x = ! $1 ? 0 : $1;
+    my $y = ! $2 ? 0 : $2;
+    $a[$x][$y] ++;
+    next if $x == $y;
+    $a[$y][$x] ++;
 }
 
 open (OUT, ">", "chrX_1Mb_contact_map.txt");
