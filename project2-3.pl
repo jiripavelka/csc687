@@ -3,7 +3,11 @@ use strict;
 use warnings;
 
 sub train {
-    `Rscript RF_train.R Training_features.txt 100 17 RF_model_100_17`;
+    my $outfile = "RF_model_$_[0]_$_[1]";
+    return if (-f $outfile);
+    dolog ("Train $_[0] $_[1]");
+    `Rscript RF_train.R Training_features.txt $_[0] $_[1] $outfile`;
+    dolog ("Done");
 }
 
 sub dolog {
@@ -12,8 +16,8 @@ sub dolog {
     close (LOG);
 }
 
-
-dolog "Start";
-train;
-dolog "Done";
+train (100, 17);
+train (100, 24);
+train (200, 17);
+train (200, 24);
 
