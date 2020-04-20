@@ -55,6 +55,17 @@ foreach my $i (1..$n) {
     tap (100, 24, "x0$i");
     tap (200, 17, "x0$i");
     tap (200, 24, "x0$i");
+    tap (250, 24, "x0$i") if ($i == 4);
     `rm "$TF"`;
+}
+
+die if not open (IN, "../prj2/Protein_ID_list_test.txt");
+while (<IN>) {
+    my $pid = substr($_, 0, 8);
+    my $ff = $pid . "_feature_file.txt";
+    my $mid = "100_17_full";
+    predict ("models/RF_model_$mid", $ff, $pid . "_prediction_$mid");
+    $mid = "200_24_x04";
+    predict ("models/RF_model_$mid", $ff, $pid . "_prediction_$mid");
 }
 
