@@ -4,24 +4,27 @@ use warnings;
 
 my $TF = "Training_features.txt";
 
+sub tap {
+    my $ext = "$_[0]_$_[1]_$_[2]";
+    my $mf = "models/RF_model_$ext";
+    train ($_[0], $_[1], $mf);
+    my $ff = "x0$_[2]";
+    my $pf = "predictions/" . substr ($ff, 0, 8) . "_$ext";
+    predict ($mf, $ff, $pf) if (-f $ff);
+}
+
 sub train {
-    my $outfile = "RF_model_$_[0]_$_[1]_$_[2]";
-    return if (-f $outfile);
+    return if (-f $_[2]);
     die if not (-f $TF);
-    dolog ("Train on $_[2] with $_[0] / $_[1]");
-    `Rscript RF_train.R $TF $_[0] $_[1] $outfile`;
+    dolog ("Train $_[2]");
+    `Rscript RF_train.R $TF $_[0] $_[1] $_[2]`;
     dolog ("Done");
 }
 
 sub predict {
-    my $mfile = "RF_model_$_[1]_$_[2]_$_[3]";
-    die $mfile if not (-f $mfile);
-    my $ffile = "$_[0]_feature_file.txt";
-    die if not (-f $ffile);
-    my $pfile = "$_[0]_predictions_$_[1]_$_[2]_$_[3].txt";
-    return if (-f $pfile);
-    dolog ("Predict $_[0] on $_[3] with $_[1] / $_[2]");
-    `Rscript RF_predict.R $mfile $ffile $pfile`;
+    return if (-f $_[2]);
+    dolog ("Predict $_[2]");
+    `Rscript RF_predict.R $_[0] $_[1] $_[2]`;
     dolog ("Done");
 }
 
@@ -31,10 +34,10 @@ sub dolog {
     close (LOG);
 }
 
-train (100, 17, 0);
-train (100, 24, 0);
-train (200, 17, 0);
-train (200, 24, 0);
+tap (100, 17, 0);
+tap (100, 24, 0);
+tap (200, 17, 0);
+tap (200, 24, 0);
 
 my $n = 5;
 my $l = int (`wc -l < "$TF"` / $n) + 1;
@@ -46,20 +49,10 @@ foreach my $i (1..$n) {
         next if $_ == $i;
         `cat "x0$_" >> "$TF"`;
     }
-    train (100, 17, $i);
-    #train (100, 24, $i);
-    #train (200, 17, $i);
-    #train (200, 24, $i);
+    tap (100, 17, $i);
+    tap (100, 24, $i);
+    tap (200, 17, $i);
+    tap (200, 24, $i);
     `rm "$TF"`;
-}
-
-=pod
-die if not open (IN, "../prj2/Protein_ID_list_test.txt");
-while (<IN>) {
-    my $pid = substr($_, 0, 8);
-    predict ($pid, 100, 17, 0);
-    foreach (2..$n) {
-        predict ($pid, 100, 17, $_);
-    }
 }
 
